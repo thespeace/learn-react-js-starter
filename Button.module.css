@@ -1,0 +1,17 @@
+/*
+import로 global CSS style 적용을 원하지않고 각자 태그에 직접 적용(css를 js 오브젝트 형식으로 쓰는 것)도 원하지 않는다면,
+우리는 create-react-app으로 분할, 정복할 수 있다.
+create-react-app은 이 css 코드를 javascript 오브젝트로 변환시켜준다.
+때문에 button에 대한 css파일인 이 파일을 적용할 최소의 컴포넌트인 button.js에만 import시키는 것이 가능하다! 미쳤다미쳤어..
+
+modular(모듈러)가 된 style들! 원하는 태그에 class를 주입해준다.
+이제 동일한 class 이름을 다른 파일 내에서도 사용할 수 있다.
+
+심지어 같은 class이름을 다른 태그들에게 적용시켜 주어도 아무 문제가 없다! classname을 랜덤하게 정의해주고 각자 적용시켜준다.
+이게 정말 개발자에게 미치도록 좋은게, 컴포넌트들이나 스타일들을 독립적이게 유지시켜주고 있다.
+ */
+
+.btn{
+    background-color : tomato;
+    color : white;
+}
