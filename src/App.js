@@ -6,7 +6,9 @@ import {useState, useEffect} from "react";
 *   두번째 argument는 빈 array*/
 function App() {
   const [counter, setValue] = useState(0);
+  const [keyword, setKeyword] = useState("");
   const onClick = () => setValue((prev) => prev + 1);
+  const onChange = (event) => setKeyword(event.target.value);
   console.log("i run all the time");
   // const iRunOnlyOnce = () =>{
   //     console.log("i run only once.");
@@ -15,8 +17,20 @@ function App() {
   //  좀 더 쉬운 방법으로 실습 >
 
     useEffect(()=>{
-        console.log("CALL THE API....");
-    },[])
+        console.log("I run only once.");
+    },[]); /*react.js 에게 아무것도 지켜보지 않게해서 단 한번만 실행된다.*/
+    useEffect(()=> {
+        if(keyword !== ""){
+            console.log("I ren when 'keyword' changes.");
+        }
+    }, [keyword]); /* 두번째 argument에 keyword를 추가하면 해당 값이 변화할때 코드를 실행할거라고  react.js에게 알려주는 것이다.
+                            따라서 우리는 component가 생성되는 첫 시작점뿐아니라 무언가를 update될때 해당 코드가 실행되도록 할 수 있게 되었다.*/
+    useEffect(()=>{
+        console.log("I run when 'counter' changes");
+    }, [counter]);
+    useEffect(()=>{
+        console.log("I run when keyword & counter change");
+    }, [keyword,counter]); /*두개 다 지켜보게 하기*/
   /*
     가끔 이 component 내부의 몇몇코드는, 예를 들어 api를 호출한다면 state의 변화에
     의해 계속 render되지 않게 강제하고 싶을 때가 있을 것이다.
@@ -30,7 +44,14 @@ function App() {
   * */
   return (
       <div>
+          <input
+              value={keyword}
+              onChange={onChange}
+              type="text"
+              placeholder={"Search here..."}
+          />
           <h1>{counter}</h1>
+          <button onClick={onClick}>click me</button>
         <h1 className={styles.title}>Welcome back!</h1>
           <Button text={"Continue"} />
       </div>
