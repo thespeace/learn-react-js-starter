@@ -98,6 +98,38 @@ function App2() {
     );
 }
 
+function ToDo() {
+    const [toDo, setToDo] = useState("");
+    const [toDos, setToDos] = useState([]);
+    const onChange = (event) => setToDo(event.target.value);
+    const onSubmit = (event) => {
+        event.preventDefault();
+        if(toDo === ""){
+            return;
+        }
+        setToDo("");
+        setToDos(currentArray => [toDo, ...toDos]) /*직전을 값(previous state || current state)을 받아 array에 넣기
+                    1.값을 직접적으로 수정하는 방법
+                    2.함수를 이용하여 값 받기 */
+    };
+
+    console.log(toDos);
+    return(
+        <div>
+            <h1>My To Dos ({toDos.length})</h1>
+            <form onSubmit={onSubmit}>
+                <input
+                    onChange={onChange}
+                    value={toDo}
+                    type="text"
+                    placeholder="Writer your to do ...."
+                />
+                <button>Add To Do</button>
+            </form>
+        </div>
+    )
+}
+
 
 // export default App;
-export {App , App2};
+export {App , App2, ToDo};
