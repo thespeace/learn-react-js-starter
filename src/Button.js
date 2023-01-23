@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import styles from "Button.module.css";
+import styles from "./Button.module.css";
 
 function Button({text}) {
-    return <button ClassName={styles.btn}>{text}</button>;
+    return <button className={styles.btn}>{text}</button>;
     /*html class에는 무작위적인 랜덤 class를 받아볼 수 있다.*/
 }
 export default Button; /*App.js에서 Button을 가져올 수 있게 하도록!*/

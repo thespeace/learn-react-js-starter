@@ -1,15 +1,16 @@
 import Button from "./Button";
-import styles from "App.module.css";
+import styles from "./App.module.css";
 import {useState, useEffect} from "react";
-/*useEffect는 두개의 argument를 가지는 function이다.
-*   첫번째 argument는 우리가 딱 한번만 실행하고 싶은 코드가
-*   두번째 argument는 빈 array*/
+/*useEffect는 react.js가 동작하는 관점에서 보면 일종의 방어막 같은 것이다.
+  state를 변화시킬 때 component를 재실행시키는 것.
+    두개의 argument를 가지는 function이다.
+        첫번째 argument는 우리가 딱 한번만 실행하고 싶은 코드가
+        두번째 argument는 dependencies(의존성, 또는 지켜보려는 것)! 즉 react.js에게 지켜보다가 해당 값이 변화하면 refresh할 수 있게 지켜볼 값을 기입해주면 된다.*/
 function App() {
   const [counter, setValue] = useState(0);
   const [keyword, setKeyword] = useState("");
   const onClick = () => setValue((prev) => prev + 1);
   const onChange = (event) => setKeyword(event.target.value);
-  console.log("i run all the time");
   // const iRunOnlyOnce = () =>{
   //     console.log("i run only once.");
   // }
@@ -18,19 +19,19 @@ function App() {
 
     useEffect(()=>{
         console.log("I run only once.");
-    },[]); /*react.js 에게 아무것도 지켜보지 않게해서 단 한번만 실행된다.*/
+    },[]); /*react.js가 지켜볼 대상이 없기때문에 "단 한번"만 실행된다.*/
     useEffect(()=> {
         if(keyword !== ""){
             console.log("I ren when 'keyword' changes.");
         }
-    }, [keyword]); /* 두번째 argument에 keyword를 추가하면 해당 값이 변화할때 코드를 실행할거라고  react.js에게 알려주는 것이다.
+    }, [keyword]); /* 두번째 argument에 keyword를 추가하면, 해당 값이 변화할때 코드를 실행할거라고 react.js에게 알려주는 것이다.
                             따라서 우리는 component가 생성되는 첫 시작점뿐아니라 무언가를 update될때 해당 코드가 실행되도록 할 수 있게 되었다.*/
     useEffect(()=>{
         console.log("I run when 'counter' changes");
     }, [counter]);
-    useEffect(()=>{
+    /*useEffect(()=>{
         console.log("I run when keyword & counter change");
-    }, [keyword,counter]); /*두개 다 지켜보게 하기*/
+    }, [keyword,counter]); /!*두개 다 지켜보게 하기*!/*/
   /*
     가끔 이 component 내부의 몇몇코드는, 예를 들어 api를 호출한다면 state의 변화에
     의해 계속 render되지 않게 강제하고 싶을 때가 있을 것이다.
@@ -51,11 +52,52 @@ function App() {
               placeholder={"Search here..."}
           />
           <h1>{counter}</h1>
-          <button onClick={onClick}>click me</button>
+          <button text={"click me"} onClick={onClick}>click me</button>
         <h1 className={styles.title}>Welcome back!</h1>
           <Button text={"Continue"} />
       </div>
   );
 }
 
-export default App;
+/* cleanup function!
+component의 생성과 삭제를 이용하여 해당 데이터를 수집할 수 있다. 예를들어 ga라던지.. 분석이 가능하다는 것! useEffect를 사용하면 가능하다.*/
+
+function Hello(){
+    /*useEffect(()=>{
+        console.log("created :)");
+        return () => console.log("destroyed :(");
+    },[]);
+    evolution ==> */
+
+    /*const byFn=()=>{
+        console.log("bye : (")
+    }
+    const hiFn = ()=>{
+        console.log("created :)");
+        return byFn; /!*React.js가 hiFn을 실행할 거고, component가 파괴될 때는 react.js는 hiFn이 return한 function(byFn)을 실행.*!/
+    }
+    useEffect(hiFn,[]);
+    evolution ==>  */
+
+    useEffect(()=>{
+        console.log("hi :>");
+        return ()=> console.log("bye :(");
+    },[]);
+
+    return <h1>Hello</h1>;
+}
+
+function App2() {
+    const [showing, setShowing] = useState(false);
+    const onClick =() => setShowing( (prev) => !prev);
+    return (
+        <div>
+            {showing ? <Hello /> : null}
+            <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
+        </div>
+    );
+}
+
+
+// export default App;
+export {App , App2};
