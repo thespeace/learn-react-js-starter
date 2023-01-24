@@ -110,7 +110,8 @@ function ToDo() {
         setToDo("");
         setToDos(currentArray => [toDo, ...toDos]) /*직전을 값(previous state || current state)을 받아 array에 넣기
                     1.값을 직접적으로 수정하는 방법
-                    2.함수를 이용하여 값 받기 */
+                    2.함수를 이용하여 값 받기
+                      + 여기에서 {...}은 es6 문법으로 Spread Attributes라고 한다. */
     };
 
     console.log(toDos);
@@ -126,6 +127,15 @@ function ToDo() {
                 />
                 <button>Add To Do</button>
             </form>
+            <hr/>
+            <ul>
+                {toDos.map((item, index)=> (
+                    <li key={index}>{item}</li>
+                ))} {/* map 은 자바스크립트 함수로, 만일 6개의 item을 가지고 있는 array를 return한다면 6번 함수가 실행된다.
+                        따라서 내가 받은 item을 그대로 return한다면 기존 array item 그대로 새로운 배열을 생성해준다(다만 기존의 배열에 접근 할 수 없게 된다).
+                        그리고 map의 첫 번째 argument는 value고 두번째 index 즉 숫자를 의미한다.
+                        리액트는 기본적으로 list에 있는 모든 item을 인식하기 때문에 key를 넣어 고유하게 만들어줘야한다. 그래서 index를 key라는 속성의 값으로 가지게하면 된다.*/}
+            </ul>
         </div>
     )
 }
