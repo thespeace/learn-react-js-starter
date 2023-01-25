@@ -1,6 +1,7 @@
 import Button from "./Button";
 import styles from "./App.module.css";
 import {useState, useEffect} from "react";
+import Movie from "./Movie"
 /*useEffect는 react.js가 동작하는 관점에서 보면 일종의 방어막 같은 것이다.
   state를 변화시킬 때 component를 재실행시키는 것.
     두개의 argument를 가지는 function이다.
@@ -180,7 +181,7 @@ function Coin() {
     );
 }
 
-function Movie() {
+function ViewMovie() {
     const [loading, setLoading] = useState(true);
     const [movies, setMovies] = useState([]);
     /*useEffect(()=>{
@@ -221,19 +222,17 @@ function Movie() {
 
     return (
         <div>
-            {loading ? <h1>Loading...</h1> : <div>{movies.map(movie =>
-                <div key={movie.id}>
-                    <img src={movie.medium_cover_image}/>
-                    <h2>{movie.title}</h2> {/* 이 component들은 movies array에 있는 각 movie에서 변형되어서 나온 것을 기억하자*/}
-                    <p>{movie.summary}</p>
-                    <ul>
-                        {movie.genres.map((g) => (
-                            <li key = {g} >{g}</li> /* key에는 무조건 고유값만! g는 고유값이 되기 충분하기때문에 기입*/
-                        ))}
-                    </ul>
-                </div>)}</div>}
+            {movies.map((movie) =>
+                <Movie
+                    key={movie.id}
+                    coverImg={movie.medium_cover_image}
+                    title={movie.title}
+                    summary={movie.summary}
+                    genres={movie.genres}
+                />
+            )}
         </div>
     );
 }
 // export default App;
-export {App , App2, ToDo, Coin, Movie};
+export {App , App2, ToDo, Coin, ViewMovie};

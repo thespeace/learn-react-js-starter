@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 // import App from './App';
-import {App, App2, ToDo, Coin, Movie} from './App'; /*js를 쓸때는 무조건 중괄호안에 넣어야한다 { } */
+import {App, App2, ToDo, Coin, ViewMovie} from './App'; /*js를 쓸때는 무조건 중괄호안에 넣어야한다 { } */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const root2 = ReactDOM.createRoot(document.getElementById('root2'));
@@ -23,6 +23,6 @@ coin.render(
     <Coin />
 );
 movie.render(
-    <Movie />
+    <ViewMovie />
 );
 
