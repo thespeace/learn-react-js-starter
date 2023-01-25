@@ -10,7 +10,7 @@ function App() {
   const [counter, setValue] = useState(0);
   const [keyword, setKeyword] = useState("");
   const onClick = () => setValue((prev) => prev + 1);
-  const onChange = (event) => setKeyword(event.target.value);
+  const onChange = (event) => setKeyword(event.target.value); /* "() => {return [returnValue]}" === "() => returnValue" === "() => (returnValue)" */
   // const iRunOnlyOnce = () =>{
   //     console.log("i run only once.");
   // }
@@ -55,6 +55,7 @@ function App() {
           <button text={"click me"} onClick={onClick}>click me</button>
         <h1 className={styles.title}>Welcome back!</h1>
           <Button text={"Continue"} />
+          <hr/>
       </div>
   );
 }
@@ -94,6 +95,7 @@ function App2() {
         <div>
             {showing ? <Hello /> : null}
             <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
+            <hr/>
         </div>
     );
 }
@@ -113,8 +115,14 @@ function ToDo() {
                     2.함수를 이용하여 값 받기
                       + 여기에서 {...}은 es6 문법으로 Spread Attributes라고 한다. */
     };
+    const deleteBtn = (index) => {
+        setToDos((curToDos) => curToDos.filter((_, curIndex) => curIndex !== index));
+        /* _ 란? 명목변수 또는 자리변수등으로 불리는데 여러가지 사용법 중 사용하지 않는 변수를 표기할 때도 사용한다.
+        filter의 매개변수 중 두 번째에 있는 index만 필요하기에 사용한 것.*/
+    };
 
     console.log(toDos);
+    // console.log(toDos.map((item, index)=> (<li key={index}>{item}</li>)));
     return(
         <div>
             <h1>My To Dos ({toDos.length})</h1>
@@ -127,19 +135,105 @@ function ToDo() {
                 />
                 <button>Add To Do</button>
             </form>
-            <hr/>
             <ul>
                 {toDos.map((item, index)=> (
-                    <li key={index}>{item}</li>
+                    <li key={index}>{item}
+                        <button onClick={()=>deleteBtn(index)}>x</button>
+                    </li>
                 ))} {/* map 은 자바스크립트 함수로, 만일 6개의 item을 가지고 있는 array를 return한다면 6번 함수가 실행된다.
                         따라서 내가 받은 item을 그대로 return한다면 기존 array item 그대로 새로운 배열을 생성해준다(다만 기존의 배열에 접근 할 수 없게 된다).
                         그리고 map의 첫 번째 argument는 value고 두번째 index 즉 숫자를 의미한다.
                         리액트는 기본적으로 list에 있는 모든 item을 인식하기 때문에 key를 넣어 고유하게 만들어줘야한다. 그래서 index를 key라는 속성의 값으로 가지게하면 된다.*/}
             </ul>
+            <hr/>
         </div>
     )
 }
 
+function Coin() {
+    const [loading, setLoading] = useState(true);
+    const [coins, setCoins] = useState([]);
+    useEffect(()=>{
+        fetch("https://api.coinpaprika.com/v1/tickers?limit=10")
+            .then((response) => response.json())
+            .then((json) => {
+                setCoins(json);
+                setLoading(false);
+            });
+    },[]);
+    return (
+        <div>
+            <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+            {loading ? <strong>Loading...</strong> : <select>
+                {coins.map((coin,index)=>(
+                    <option key={index}>
+                        {coin.name} ({coin.symbol}) : ${coin.quotes.USD.price}
+                    </option>
+                ))}
+            </select>}
 
+            {/*<ul>
+                {coins.map((coin) => <li>{coin.name} ({coin.symbol}) : ${coin.quotes.USD.price}</li>)}
+            </ul>*/}
+            <hr/>
+        </div>
+    );
+}
+
+function Movie() {
+    const [loading, setLoading] = useState(true);
+    const [movies, setMovies] = useState([]);
+    /*useEffect(()=>{
+        fetch(
+            `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+        )
+            .then(response => response.json())
+            .then(json => {
+                setMovies(json.data.movies);
+                setLoading(false);
+            });
+    },[]);  조금더 게을러져 보자 ==> */
+
+    /*const getMovies = async() => {
+        const response = await fetch(
+            `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+        );
+        const json = await response.json();
+        setMovies(json.data.movies);
+        setLoading(false);
+    };
+    useEffect(()=>{
+        getMovies();
+    },[]);  더더 게을러져 보자 ==>*/
+
+    const getMovies = async() => {
+        const json = await(
+            await fetch(
+                `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+            )
+        ).json();
+        setMovies(json.data.movies);
+        setLoading(false);
+    };
+    useEffect(()=>{
+        getMovies();
+    },[]);
+
+    return (
+        <div>
+            {loading ? <h1>Loading...</h1> : <div>{movies.map(movie =>
+                <div key={movie.id}>
+                    <img src={movie.medium_cover_image}/>
+                    <h2>{movie.title}</h2> {/* 이 component들은 movies array에 있는 각 movie에서 변형되어서 나온 것을 기억하자*/}
+                    <p>{movie.summary}</p>
+                    <ul>
+                        {movie.genres.map((g) => (
+                            <li key = {g} >{g}</li> /* key에는 무조건 고유값만! g는 고유값이 되기 충분하기때문에 기입*/
+                        ))}
+                    </ul>
+                </div>)}</div>}
+        </div>
+    );
+}
 // export default App;
-export {App , App2, ToDo};
+export {App , App2, ToDo, Coin, Movie};
