@@ -1,7 +1,14 @@
 import Button from "./Button";
 import styles from "./App.module.css";
 import {useState, useEffect} from "react";
-import Movie from "./Movie"
+import {
+    BrowserRouter as Router, /*HashRouter도 있지만 보통 BrowserRouter을 쓴다.*/
+    Switch,
+    Route,
+    Link, /*새로고침 없이도 클라이언트를 다른 페이지로 이동시켜주는 컴포넌트!*/
+} from "react-router-dom";
+import Home from "./routes/Home"
+import Detail from "./routes/Detail"
 /*useEffect는 react.js가 동작하는 관점에서 보면 일종의 방어막 같은 것이다.
   state를 변화시킬 때 component를 재실행시키는 것.
     두개의 argument를 가지는 function이다.
@@ -181,57 +188,24 @@ function Coin() {
     );
 }
 
+
+
 function ViewMovie() {
-    const [loading, setLoading] = useState(true);
-    const [movies, setMovies] = useState([]);
-    /*useEffect(()=>{
-        fetch(
-            `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
-        )
-            .then(response => response.json())
-            .then(json => {
-                setMovies(json.data.movies);
-                setLoading(false);
-            });
-    },[]);  조금더 게을러져 보자 ==> */
-
-    /*const getMovies = async() => {
-        const response = await fetch(
-            `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
-        );
-        const json = await response.json();
-        setMovies(json.data.movies);
-        setLoading(false);
-    };
-    useEffect(()=>{
-        getMovies();
-    },[]);  더더 게을러져 보자 ==>*/
-
-    const getMovies = async() => {
-        const json = await(
-            await fetch(
-                `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
-            )
-        ).json();
-        setMovies(json.data.movies);
-        setLoading(false);
-    };
-    useEffect(()=>{
-        getMovies();
-    },[]);
-
     return (
-        <div>
-            {movies.map((movie) =>
-                <Movie
-                    key={movie.id}
-                    coverImg={movie.medium_cover_image}
-                    title={movie.title}
-                    summary={movie.summary}
-                    genres={movie.genres}
-                />
-            )}
-        </div>
+        <Router>
+            <Switch> {/*한번에 하나의 Route만 렌더링하기 위해 Switch*/}
+                <Route path="/hello">
+                    <h1>hello</h1>
+                </Route>
+                <Route path="/movie/:id"> {/* 해당 path의 url인 경우 포함되어 있는 컴포넌트만 보여주기! : 를 사용해서 변수를 props, React Router에게 이것이 변수라고 알려주는것!
+                                                그래서 url에서 값을 받아오는 useParams같은 내장 함수를 사용하여 parameter를 get해서 사용할 수 있다!*/}
+                    <Detail />
+                </Route>
+                <Route path="/">
+                    <Home /> {/*component를 rendering 한다는 것은 실질적으로는 함수를 불러오는 것을 기억하기!*/}
+                </Route>
+            </Switch>
+        </Router>
     );
 }
 // export default App;
